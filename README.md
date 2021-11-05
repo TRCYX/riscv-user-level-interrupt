@@ -21,3 +21,9 @@
 - 阅读对 Qemu 的修改
 - 阅读 ACLINT 标准
 - 想
+
+11-6
+- Debug Qemu 6 上的 N 扩展实现，已能正常启动 rCore，但串口输出尚有问题
+- 修改 Qemu 的 ACLINT 实现，使其支持用户态中断
+- 开始编写在 rCore 上用 ACLINT 跨核发送用户态中断的演示程序
+- 记录 FIFO 设计方案和存在的问题
