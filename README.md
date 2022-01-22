@@ -43,3 +43,10 @@
 
 12-11
 - 在 rCore-N 中实现邻接矩阵版本的控制
+
+1-15
+- 了解 Zynq UltraScale+ MPSoC 和 AXU15EG 开发板，尝试在上面运行简单的 PL 和 PS 应用
+- 了解 Labeled RISC-V，修改其硬件代码以尝试支持 AXU15EG
+
+1-22
+- 尝试编译 Labeled RISC-V 在 ZynqMP 上运行需要的 ARM 软件，编写 AXU15EG 设备树
