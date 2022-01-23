@@ -1,5 +1,9 @@
 # riscv-user-level-interrupt
 
+- [项目地址](https://github.com/TRCYX/rv-n-ext-impl/tree/uipi)
+- [设计文档](https://github.com/TRCYX/rv-n-ext-impl/blob/uipi/docs/src/ch2_9_uipi.md)
+- [AXU15EG 启动记录](AXU15EG%20启动记录.md)
+
 初步计划
 - 在 Qemu 中理解并复现已有工作
 - 加入开发，验证用户态中断带来的性能提升
@@ -50,3 +54,4 @@
 
 1-22
 - 尝试编译 Labeled RISC-V 在 ZynqMP 上运行需要的 ARM 软件，编写 AXU15EG 设备树
+- 整理文档
