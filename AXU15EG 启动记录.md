@@ -141,9 +141,15 @@ make
 
 ##### Linux 内核
 
+直接编译即可。
+
+##### Linux 内核使用的设备树
+
 Linux 用的设备树生成由 Xilinx GitHub 提供的 `device-tree-xlnx` 帮助完成，可以参考 LvNA REAME。
 
-**需要在 `sdhci1` 下加入一行 `no-1-8-v;` 来禁止 Ultra High Speed，Linux 内核才能驱动 SD 卡，具体原因尚不清楚。**可以加在自动生成的 pcw.dtsi 中。
+可能需要修改自动生成的 system-top.dts 中的 `stdout-path`，使其对应 `uart0`，而不是 LvNA 中和 PL 通信的 UART 16650。在我这里，需要设置此项为 `"serial4:115200n8"` 对应下面的 `aliases`。
+
+需要在 `sdhci1` 下加入一行 `no-1-8-v;` 来禁止 Ultra High Speed，Linux 内核才能驱动 SD 卡，具体原因尚不清楚。可以加在自动生成的 pcw.dtsi 中。
 
 ##### Linux rootfs
 
