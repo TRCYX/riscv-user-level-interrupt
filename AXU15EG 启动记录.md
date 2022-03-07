@@ -110,12 +110,41 @@ PL 和 PS 间用多个 AXI 总线沟通。其中 PL 的内存为 PS DDR 的高 2
 
 参考 Xilinx Wiki 和 LvNA 的 README，多数代码可以在 Xilinx 的 GitHub 上找到。可以采用对应工具版本的 tag，如 xilinx-v2020.2。
 
-- ATF 直接参照两份文档编译即可。
-- U-Boot 需要设备树。我尝试给 AXU15EG 写了一份设备树，待大致能用后补上。
-- FSBL 和 PMUFW：用 fpga 文件夹下的 make bootgen 即可。注意 fpga/boot 下的 mk.tcl 需要更新对 Vitis/xsct 的支持，具体来说，需要在 `generate_app` `set_repo_path` `create_sw_design` `get_os` `generate_target` 前加上 `hsi::`，`set_property` 前加上 `common::`。Vitis 2020 似乎对 PS 中断控制器的设置有 bug，待确定后补充。
-- Linux 用的设备树生成由 Xilinx GitHub 提供的`device-tree-xlnx` 帮助完成，应也需要添加 AXU15EG 板级支持，待补充。
+> 如果 Linux 不是工作机器的主要操作系统，Vivado 很可能装在 Windows 下。这样运行 LvNA 提供的 Makefile 调用 Vivado 会有诸多麻烦，不妨手动执行命令。Vivado 和 Vitis 在安装目录下提供了 settings64.bat/sh 等，会将其二进制加入当前 shell 的 PATH，在 Windows 下提供了大量 posix 工具和 ARM 编译器，可以用来编译 ATF，其 Makefile 针对 Windows 做过特化。U-Boot 则必须在 WSL 下编译，Vivado/Vitis 提供的工具可能不足以执行其 Makefile。
+>
+> 生成 rootfs 则目前来看只能在 Linux 下完成，因为 Windows 难以操作 ext4 文件系统。
 
-目前进度到此。
+##### ATF
 
-如果 Linux 不是工作机器的主要操作系统，Vivado 很可能装在 Windows 下。这样运行 LvNA 提供的 Makefile 调用 Vivado 会有诸多麻烦，不妨手动执行命令。Vivado 和 Vitis 在安装目录下提供了 settings64.bat/sh 等，会将其二进制加入当前 shell 的 PATH，在 Windows 下提供了大量 posix 工具和 ARM 编译器，可以用来编译 ATF。U-Boot 则必须在 WSL 下编译，Vivado/Vitis 提供的工具可能不足以执行其 Makefile。
+直接参照两份文档编译即可。
 
+##### FSBL 和 PMUFW
+
+用 fpga 文件夹下的 make bootgen 即可。注意 fpga/boot 下的 mk.tcl 需要更新对 Vitis/xsct 的支持，具体来说，需要在 `generate_app` `set_repo_path` `create_sw_design` `get_os` `generate_target` 前加上 `hsi::`，`set_property` 前加上 `common::`。
+
+Vitis 2020 对 PS 中断控制器 gic 的设置有 bug，如果中断信号会不止连向 PS 的中断输入，还连向其他位置（如用来检查的 LED），某些步骤运行会失败。需要修改 Block Design，删除 DMA 中断和 LED 之间的连接。
+
+##### U-Boot
+
+U-Boot 需要设备树。我尝试给 AXU15EG 写了一份设备树，见 https://github.com/TRCYX/u-boot-xlnx/tree/rvn，如果也是使用 2020.2，可以直接 clone 这个分支。否则可以参考此分支相对于 Xilinx 的 xilinx-v2020.2 tag 的改动适配。
+
+**注意：**>= 2020.1 版本编译 U-Boot 的方式和 < 2020.1 不同，具体见 [Xilinx Wiki](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/18841973/Build+U-Boot)，**和 LvNA README 中提供的方式不一样。**大致可以执行如下命令编译：
+
+```shell
+export CROSS_COMPILE=aarch64-linux-gnu-
+export ARCH=aarch64
+make distclean
+make xilinx_zynqmp_virt_defconfig
+export DEVICE_TREE=axu15eg
+make
+```
+
+##### Linux 内核
+
+Linux 用的设备树生成由 Xilinx GitHub 提供的 `device-tree-xlnx` 帮助完成，可以参考 LvNA REAME。
+
+**需要在 `sdhci1` 下加入一行 `no-1-8-v;` 来禁止 Ultra High Speed，Linux 内核才能驱动 SD 卡，具体原因尚不清楚。**可以加在自动生成的 pcw.dtsi 中。
+
+##### Linux rootfs
+
+参照 LvNA README 制作 debian rootfs 即可，大概也可以选用自己喜欢的发行版。
