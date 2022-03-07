@@ -126,7 +126,7 @@ Vitis 2020 对 PS 中断控制器 gic 的设置有 bug，如果中断信号会�
 
 ##### U-Boot
 
-U-Boot 需要设备树。我尝试给 AXU15EG 写了一份设备树，见 https://github.com/TRCYX/u-boot-xlnx/tree/rvn，如果也是使用 2020.2，可以直接 clone 这个分支。否则可以参考此分支相对于 Xilinx 的 xilinx-v2020.2 tag 的改动适配。
+U-Boot 需要设备树。我尝试给 AXU15EG 写了一份设备树，见 https://github.com/TRCYX/u-boot-xlnx/tree/rvn，虽然可能有不少错误，但至少可以正确从 SD 卡启动 Linux。如果也是使用 2020.2，可以直接 clone 这个分支。否则可以参考此分支相对于 Xilinx 的 xilinx-v2020.2 tag 的改动适配。
 
 **注意：**>= 2020.1 版本编译 U-Boot 的方式和 < 2020.1 不同，具体见 [Xilinx Wiki](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/18841973/Build+U-Boot)，**和 LvNA README 中提供的方式不一样。**大致可以执行如下命令编译：
 
@@ -148,3 +148,4 @@ Linux 用的设备树生成由 Xilinx GitHub 提供的 `device-tree-xlnx` 帮助
 ##### Linux rootfs
 
 参照 LvNA README 制作 debian rootfs 即可，大概也可以选用自己喜欢的发行版。
+
